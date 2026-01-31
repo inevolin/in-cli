@@ -11,16 +11,6 @@
 - **Zero Dependencies**: Pure Bash script (requires Bash 3.2+).
 - **Subshell Isolation**: Commands run in subshells, keeping your current working directory intact.
 
-## Requirements
-
-- **Shell**: Bash 3.2 or higher
-- **Operating Systems**: 
-  - Linux (all distributions)
-  - macOS 10.5+
-  - BSD systems (FreeBSD, OpenBSD, NetBSD)
-  - Windows (via WSL, Git Bash, or Cygwin)
-- **Dependencies**: None (pure Bash)
-
 ## Installation
 
 ### Automatic (Recommended)
@@ -98,6 +88,16 @@ This project includes a comprehensive test suite covering all features and regre
 ./tests/test_install.sh
 ./tests/test_shell_mode.sh
 ```
+
+## Requirements
+
+- **Shell**: Bash 3.2 or higher
+- **Operating Systems**: 
+  - Linux (all distributions)
+  - macOS 10.5+
+  - BSD systems (FreeBSD, OpenBSD, NetBSD)
+  - Windows (via WSL, Git Bash, or Cygwin)
+- **Dependencies**: None (pure Bash)
 
 ## Contributing
 
