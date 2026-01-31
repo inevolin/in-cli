@@ -9,7 +9,7 @@ Output .github/assets/demo.gif
 # Terminal appearance settings
 Set FontSize 24
 Set Width 1200
-Set Height 600
+Set Height 360
 Set Padding 20
 
 # Setup the environment (hidden from viewer)
