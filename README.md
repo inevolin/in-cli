@@ -24,7 +24,10 @@
 ## Installation
 
 ### Automatic (Recommended)
-Run the installer script: `curl -sL https://raw.githubusercontent.com/inevolin/in-cli/main/install.sh | bash`
+Run the installer script: 
+```bash
+curl -sL https://raw.githubusercontent.com/inevolin/in-cli/main/install.sh | bash
+```
 
 ### Manual
 1. Clone the repo or download `in.sh`.
