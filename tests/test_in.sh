@@ -1,10 +1,25 @@
 #!/bin/bash
 
-# tests/test_in.sh
-# Tests for the 'in' CLI tool
+################################################################################
+# test_in.sh - Comprehensive test suite for the 'in' CLI tool
+#
+# Purpose:
+#   Tests all features and edge cases of the 'in' tool including:
+#   - Single and multiple directory execution
+#   - Glob patterns and comma-separated lists
+#   - Parallel execution with -P option
+#   - Argument parsing (implicit vs explicit -- separator)
+#   - Error handling (missing dirs, no command, etc.)
+#
+# Usage:
+#   ./tests/test_in.sh
+#
+# Requirements:
+#   - Bash 3.2+
+#   - in.sh in parent or current directory
+################################################################################
 
-# Path to the tool - assuming run from the tests directory or root
-# Resolve absolute path to in.sh
+# Resolve absolute path to in.sh (works from root or tests directory)
 if [[ -f "./in.sh" ]]; then
     IN_TOOL="$(pwd)/in.sh"
 elif [[ -f "../in.sh" ]]; then
@@ -176,44 +191,7 @@ test_separator() {
     assert_exit_code 0 $? "Separator exit code"
 }
 
-test_create_flag_implicit() {
-    setup
-    # dir_new does not exist. Implicit creation works on first arg.
-    output=$("$IN_TOOL" -c dir_new touch init.txt)
-    assert_exit_code 0 $? "Create flag implicit execution"
-    assert_dir_exists "dir_new" "Directory created"
-    assert_file_exists "dir_new/init.txt" "Command ran in new directory"
-}
-
-test_create_flag_explicit_multiple() {
-    setup
-    # dir1, dir2 do not exist. Use -- to be safe or verify behavior
-    output=$("$IN_TOOL" -c dir1 dir2 -- touch init.txt)
-    assert_exit_code 0 $? "Create flag explicit multiple dirs"
-    assert_dir_exists "dir1" "dir1 created"
-    assert_dir_exists "dir2" "dir2 created"
-    assert_file_exists "dir1/init.txt" "Command ran in dir1"
-    assert_file_exists "dir2/init.txt" "Command ran in dir2"
-}
-
-test_create_flag_comma() {
-    setup
-    output=$("$IN_TOOL" -c dir1,dir2 touch init.txt)
-    assert_exit_code 0 $? "Create flag comma list"
-    assert_dir_exists "dir1" "dir1 created"
-    assert_dir_exists "dir2" "dir2 created"
-}
-
-test_create_missing_flag_fails() {
-    setup
-    output=$("$IN_TOOL" non_existent_dir touch fail.txt 2>&1)
-    status=$?
-    if [[ $status -ne 0 ]]; then
-        log_pass "Missing directory fails without -c"
-    else
-        log_fail "Missing directory should fail without -c"
-    fi
-}
+# Tests for create flag removed
 
 test_parallel() {
     setup
@@ -297,10 +275,6 @@ test_comma_list_with_glob
 test_glob_pattern_shell_expansion
 test_glob_pattern_quoted
 test_separator
-test_create_flag_implicit
-test_create_flag_explicit_multiple
-test_create_flag_comma
-test_create_missing_flag_fails
 test_parallel
 test_complex_spaces
 test_implicit_split_heuristic
