@@ -34,6 +34,14 @@ curl -sL https://raw.githubusercontent.com/inevolin/in-cli/main/install.sh | bas
 2. Make it executable: `chmod +x in.sh`
 3. Move to your path: `sudo mv in.sh /usr/local/bin/in`
 
+## Uninstallation
+
+To remove `in`, delete the executable from your path:
+
+```bash
+sudo rm "$(which in)"
+```
+
 ## Usage
 
 ```bash
