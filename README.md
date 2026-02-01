@@ -126,9 +126,7 @@ This project includes a comprehensive test suite covering all features and regre
 
 ```bash
 # Run all tests
-./tests/test_in.sh
-./tests/test_install.sh
-./tests/test_shell_mode.sh
+./tests.sh
 ```
 
 ## Requirements
