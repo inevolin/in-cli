@@ -4,33 +4,11 @@
 
 `in` is a lightweight Bash-based CLI tool that allows you to execute commands in directories simultaneously or sequentially. It supports glob patterns, brace expansion, comma-separated lists, and parallel execution.
 
-## Features
-
 - **Flexible Targets**: Specify directories using standard wildcards (`project*`), brace expansion (by shell), comma-separated lists (`front,back`), or exact paths.
 - **Parallel Execution**: Run commands concurrently across directories using `-P`.
 - **Zero Dependencies**: Pure Bash script (requires Bash 3.2+).
 - **Subshell Isolation**: Commands run in subshells, keeping your current working directory intact.
 
-## Installation
-
-### Automatic (Recommended)
-Run the installer script: 
-```bash
-curl -sL https://raw.githubusercontent.com/inevolin/in-cli/main/install.sh | bash
-```
-
-### Manual
-1. Clone the repo or download `in.sh`.
-2. Make it executable: `chmod +x in.sh`
-3. Move to your path: `sudo mv in.sh /usr/local/bin/in`
-
-## Uninstallation
-
-To remove `in`, delete the executable from your path:
-
-```bash
-sudo rm "$(which in)"
-```
 
 ## Usage
 
@@ -68,15 +46,65 @@ in -s logs/* "rm *.old"
 in -s ./* "wc -l *.json"
 ```
 
-### ⚠️ Important Note on Wildcards
+### Important Note on Wildcards
 
-When using wildcards (glob patterns) like `*.txt` in your command, your shell (bash/zsh) will try to expand them **before** running `in`.
+When using wildcards (glob patterns) like `*.txt` in your command, your shell (bash/zsh) will try to expand them **before** running `in` ⚠️
 
-❌ **Incorrect:** `in projects/* ls *.txt` *Issue:* The shell expands `*.txt` in your *current* directory, not inside `projects/*`. If no txt files exist locally, it might fail or pass the literal string.
+- ❌ **Incorrect:** `in projects/* ls *.txt` *Issue:* The shell expands `*.txt` in your *current* directory, not inside `projects/*`. If no txt files exist locally, it might fail or pass the literal string.
 
-✅ **Correct (Standard Mode):** `in projects/* ls my-file.txt` *Works because no wildcards are used.*
+- ✅ **Correct:** `in projects/* ls my-file.txt` *Works because no wildcards are used.*
 
-✅ **Correct (Shell Mode):** `in -s projects/* "ls *.txt"` *Why:* By quoting `"ls *.txt"` and using `-s`, the wildcard is protected from your current shell and expanded inside each target directory.
+- ✅ **Correct:** `in -s projects/* "ls *.txt"` *Why:* By quoting `"ls *.txt"` and using `-s`, the wildcard is protected from your current shell and expanded inside each target directory.
+
+## Installation
+
+### Automatic (Recommended)
+Run the installer script: 
+```bash
+curl -sL https://raw.githubusercontent.com/inevolin/in-cli/main/install.sh | bash
+```
+
+### Manual
+1. Clone the repo or download `in.sh`.
+2. Make it executable: `chmod +x in.sh`
+3. Move to your path: `sudo mv in.sh /usr/local/bin/in`
+
+## Motivation
+
+While tools like `find` and `xargs` are powerful, constructing correct commands for simple tasks is often cumbersome and error-prone.
+
+**Compare:**
+
+Running `git status` in all subdirectories:
+
+**With `find`:**
+```bash
+find . -maxdepth 1 -type d -not -name '.' -execdir git status \;
+```
+
+**With `xargs`:**
+```bash
+ls -d */ | xargs -I {} sh -c 'cd {} && git status'
+```
+
+**With `in`:**
+```bash
+in * git status
+```
+
+**Why `in` is simpler:**
+- **No boilerplate**: Forget about `-maxdepth`, `-execdir`, `-print0`, or complex `xargs` flags.
+- **Intuitive**: It works just like running a command, but applied to multiple places.
+- **Safety defaults**: Handles directory paths with spaces correctly without arcane flags.
+- **Easy Parallelism**: Just add `-P 4` to run 4 jobs at once. Doing this with `xargs` often leads to complex quoting or syntax.
+
+## Uninstallation
+
+To remove `in`, delete the executable from your path:
+
+```bash
+sudo rm "$(which in)"
+```
 
 ## Testing
 
