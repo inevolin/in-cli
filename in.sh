@@ -49,6 +49,7 @@ print_usage() {
     echo "  COMMAND       The command to run in each directory."
     echo
     echo "Options:"
+    echo "  -d, --dry     Dry run (print commands without executing)"
     echo "  -h, --help    Show this help message"
     echo "  -P, --parallel N  Run in parallel with N jobs (default: 1)"
     echo "  -v, --verbose Show verbose output"
@@ -92,6 +93,7 @@ success() {
 for arg in "$@"; do
   shift
   case "$arg" in
+    "--dry") set -- "$@" "-d" ;;
     "--help") set -- "$@" "-h" ;;
     "--parallel") set -- "$@" "-P" ;;
     "--verbose") set -- "$@" "-v" ;;
@@ -100,8 +102,11 @@ for arg in "$@"; do
 done
 
 OPTIND=1
-while getopts "hP:v" opt; do
+while getopts "dhP:v" opt; do
     case "$opt" in
+    d)
+        dry_run=1
+        ;;
     h)
         print_usage
         exit 0
@@ -330,7 +335,12 @@ run_command() {
     local target="$1"
     shift
     local cmd=("$@")
-    
+    if [[ $dry_run -eq 1 ]]; then
+            echo -e "${YELLOW}[DRY] in ${target} \$ ${NC}${cmd[*]}"
+            return 0
+        fi
+
+        
     # Mode 1: Directory Target
     if [[ -d "$target" ]]; then
         # Execute command in subshell (CD into directory)

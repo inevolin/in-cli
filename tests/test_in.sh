@@ -262,6 +262,20 @@ test_verbose() {
     assert_output_contains "$output" "[in] Target directories" "Verbose logging"
 }
 
+test_dry_run() {
+    setup
+    mkdir subdir
+    output=$("$IN_TOOL" -d subdir touch dry_run_failed.txt 2>&1)
+    
+    assert_output_contains "$output" "[DRY]" "Dry run output marker"
+    
+    if [[ -f "subdir/dry_run_failed.txt" ]]; then
+        log_fail "Dry run executed command when it should not have"
+    else
+        log_pass "Dry run did not execute command"
+    fi
+}
+
 echo "Running tests against $IN_TOOL..."
 
 # Ensure executable
@@ -282,6 +296,7 @@ test_no_args
 test_no_command
 test_non_matching_glob
 test_verbose
+test_dry_run
 
 if [[ $FAILED_TESTS -eq 0 ]]; then
     echo -e "${GREEN}All tests passed!${NC}"

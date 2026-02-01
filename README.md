@@ -26,6 +26,7 @@ Quoting is **mandatory** if your command contains:
 
 | Flag | Description |
 |------|-------------|
+| `-d`, `--dry` | Dry run (print commands without executing). |
 | `-h`, `--help` | Show help message. |
 | `-P`, `--parallel N` | Run in parallel with `N` jobs (default: 1). |
 | `-v`, `--verbose` | Enable verbose output (debug logs). |
@@ -49,6 +50,9 @@ in -P 4 packages/* pnpm build
 # Command Chaining (runs in shell automatically when quoted)
 in packages/* "pnpm update && git commit -am 'update' && git push"
 in services/* "docker build . || echo 'Build failed'"
+
+# Dry Run (Preview what will happen)
+in -d packages/* "rm -rf node_modules"
 
 # Shell features (pipes, redirects, wildcards inside dir)
 in src/* "ls -l | grep .ts"
