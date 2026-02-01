@@ -16,16 +16,23 @@
 in [OPTIONS] [DIRECTORIES...] [--] COMMAND...
 ```
 
+**Recommendation:** It is optional but highly recommended to **quote your command** string (e.g., `in * "git status"`).
+
+Quoting is **mandatory** if your command contains:
+- Shell operators: `&&`, `||`, `;`, `|`, `>`
+- Wildcards belonging to the command: `*`, `?` (e.g., `rm *.log`)
+
 ### Options
 
 | Flag | Description |
 |------|-------------|
 | `-h`, `--help` | Show help message. |
 | `-P`, `--parallel N` | Run in parallel with `N` jobs (default: 1). |
-| `-s`, `--shell` | Execute command string via shell (enables globbing/pipes). |
 | `-v`, `--verbose` | Enable verbose output (debug logs). |
 
 ### Examples
+
+See [EXAMPLES.md](EXAMPLES.md) for 50+ real-world examples.
 
 ```bash
 # Git operations
@@ -39,11 +46,14 @@ in frontend,backend yarn build
 # Parallel execution (faster builds)
 in -P 4 packages/* pnpm build
 
+# Command Chaining (runs in shell automatically when quoted)
+in packages/* "pnpm update && git commit -am 'update' && git push"
+in services/* "docker build . || echo 'Build failed'"
+
 # Shell features (pipes, redirects, wildcards inside dir)
-# Use -s/--shell and quotes
-in -s src/* "ls -l | grep .ts"
-in -s logs/* "rm *.old"
-in -s ./* "wc -l *.json"
+in src/* "ls -l | grep .ts"
+in logs/* "rm *.old"
+in ./* "wc -l *.json > stats.txt"
 ```
 
 ### Important Note on Wildcards
@@ -54,7 +64,7 @@ When using wildcards (glob patterns) like `*.txt` in your command, your shell (b
 
 - ✅ **Correct:** `in projects/* ls my-file.txt` *Works because no wildcards are used.*
 
-- ✅ **Correct:** `in -s projects/* "ls *.txt"` *Why:* By quoting `"ls *.txt"` and using `-s`, the wildcard is protected from your current shell and expanded inside each target directory.
+- ✅ **Correct:** `in projects/* "ls *.txt"` *Why:* By quoting `"ls *.txt"`, `in` automatically enables shell mode, protecting the wildcard from your current shell so it expands inside each target directory.
 
 ## Installation
 

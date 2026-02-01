@@ -11,6 +11,7 @@ Set FontSize 24
 Set Width 1200
 Set Height 360
 Set Padding 20
+Set TypingSpeed 75ms
 
 # Setup the environment (hidden from viewer)
 Hide
@@ -35,7 +36,9 @@ Enter
 Show
 
 # Scene 1: Batch File Operations
+Set TypingSpeed 20ms
 Type "# Create config files in all service directories"
+Set TypingSpeed 75ms
 Sleep 500ms
 Enter
 Type "in *-service touch .env"
@@ -46,9 +49,10 @@ Sleep 3s
 # Clear for next scene
 Type "clear"
 Enter
-
 # Scene 2: Parallel Execution
+Set TypingSpeed 20ms
 Type "# Run build scripts in parallel"
+Set TypingSpeed 75ms
 Sleep 500ms
 Enter
 Type "in -P 3 * bash -c 'echo building...; sleep 0.5'"
@@ -59,12 +63,13 @@ Sleep 3s
 # Clear for next scene
 Type "clear"
 Enter
-
 # Scene 3: Shell Features
+Set TypingSpeed 20ms
 Type "# Execute complex shell commands (pipes, wildcards)"
+Set TypingSpeed 75ms
 Sleep 500ms
 Enter
-Type "in -s * 'ls -a | grep .env'"
+Type "in * 'ls -a | grep .env'"
 Sleep 800ms
 Enter
 Sleep 3s
