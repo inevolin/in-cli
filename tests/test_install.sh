@@ -233,6 +233,33 @@ test_installed_script_works() {
     teardown
 }
 
+test_custom_command_name() {
+    setup
+    
+    mkdir -p bin
+    cp "$INSTALL_SCRIPT" .
+    cp "$IN_SCRIPT" .
+    
+    # Modify install script to use our custom directory
+    sed -i.bak 's|CANDIDATE_DIRS=(|CANDIDATE_DIRS=(\n    "'$TEST_DIR'/bin"|' install.sh
+    
+    # Run install with custom name argument
+    output=$(bash install.sh "indo" 2>&1)
+    
+    assert_file_exists "bin/indo" "Install with custom name 'indo'"
+    assert_file_executable "bin/indo" "Installed 'indo' is executable"
+    assert_output_contains "$output" "Successfully installed 'indo'" "Success message for 'indo' shown"
+    
+    # Check that default 'in' was NOT installed
+    if [[ ! -f "bin/in" ]]; then
+        log_pass "Default 'in' was NOT installed"
+    else
+        log_fail "Default 'in' WAS installed (should not be)"
+    fi
+    
+    teardown
+}
+
 echo "Running installation tests..."
 
 test_script_syntax
@@ -242,6 +269,7 @@ test_install_from_local_file
 test_install_download_mode
 test_path_warning
 test_installed_script_works
+test_custom_command_name
 
 if [[ $FAILED_TESTS -eq 0 ]]; then
     echo -e "${GREEN}All installation tests passed!${NC}"

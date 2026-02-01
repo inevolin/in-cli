@@ -8,8 +8,8 @@
 #   Can be run locally from the repository or via curl pipe to bash.
 #
 # Usage:
-#   Local:  ./install.sh
-#   Remote: curl -sL https://raw.githubusercontent.com/inevolin/in-cli/main/install.sh | bash
+#   Local:  ./install.sh [command_name]
+#   Remote: curl -sL https://raw.githubusercontent.com/inevolin/in-cli/main/install.sh | bash -s -- [command_name]
 #
 # What it does:
 #   1. Finds a suitable installation directory (checks /usr/local/bin, ~/.local/bin, etc.)
@@ -23,6 +23,9 @@ set -e  # Exit on any error
 
 REPO_URL="https://raw.githubusercontent.com/inevolin/in-cli/main/in.sh"
 SOURCE_FILE="./in.sh"
+
+# Default command name is "in", but can be overridden by the first argument
+COMMAND_NAME="${1:-in}"
 
 # Candidate installation directories (in order of preference)
 CANDIDATE_DIRS=(
@@ -62,10 +65,10 @@ if [ -z "$DEST_DIR" ]; then
     fi
 fi
 
-DEST_FILE="$DEST_DIR/in"
+DEST_FILE="$DEST_DIR/$COMMAND_NAME"
 TMP_FILE=$(mktemp 2>/dev/null || echo "/tmp/in.$$.tmp")
 
-echo "Installing 'in' to $DEST_FILE..."
+echo "Installing '$COMMAND_NAME' to $DEST_FILE..."
 
 # Download or copy the script
 if [ -f "in.sh" ]; then
@@ -85,13 +88,13 @@ else
     sudo mv "$TMP_FILE" "$DEST_FILE"
 fi
 
-echo "Successfully installed 'in' to $DEST_FILE!"
+echo "Successfully installed '$COMMAND_NAME' to $DEST_FILE!"
 
 # Check if the install directory is in PATH
 if ! echo "$PATH" | grep -q "$DEST_DIR"; then
     echo ""
     echo "⚠️  Warning: $DEST_DIR is not in your PATH"
-    echo "To make 'in' accessible, follow these steps:"
+    echo "To make '$COMMAND_NAME' accessible, follow these steps:"
     echo "1. Add this line to your shell configuration (~/.bashrc, ~/.zshrc, etc.):"
     echo "   export PATH=\"$DEST_DIR:\$PATH\""
     echo "2. Restart your shell or run:"
@@ -99,4 +102,4 @@ if ! echo "$PATH" | grep -q "$DEST_DIR"; then
 fi
 
 echo ""
-echo "Try it out: in --help"
+echo "Try it out: $COMMAND_NAME --help"
