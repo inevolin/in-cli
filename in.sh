@@ -40,7 +40,9 @@ verbose=0
 shell_mode=0
 
 print_usage() {
-    echo "Usage: in [OPTIONS] [DIRECTORIES...] [--] COMMAND..."
+    local cmd_name
+    cmd_name=$(basename "$0")
+    echo "Usage: $cmd_name [OPTIONS] [DIRECTORIES...] [--] COMMAND..."
     echo
     echo "Run a command in one or more directories."
     echo

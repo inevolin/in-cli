@@ -78,6 +78,11 @@ Run the installer script:
 curl -sL https://raw.githubusercontent.com/inevolin/in-cli/main/install.sh | bash
 ```
 
+To install with a custom name (e.g., `indo` or `in-cli`) to avoid conflicts with the shell keyword `in`, pass the name as an argument:
+```bash
+curl -sL https://raw.githubusercontent.com/inevolin/in-cli/main/install.sh | bash -s -- indo
+```
+
 ### Manual
 1. Clone the repo or download `in.sh`.
 2. Make it executable: `chmod +x in.sh`
