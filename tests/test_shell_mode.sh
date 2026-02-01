@@ -47,12 +47,23 @@ else
     fi
 fi
 
-# Shell mode: in -s . ls "*.webui"
-output=$("$IN_ABS" -s . ls "*.webui" 2>&1)
+# Implicit Shell Mode (Standard)
+# in . "ls *.webui"
+# Should work because it's a single argument command string
+output=$("$IN_ABS" . "ls *.webui" 2>&1)
 if [[ "$output" == *"a.webui"* && "$output" == *"b.webui"* ]]; then
-    log_pass "Shell mode expanded glob correctly"
+    log_pass "Implicit shell mode expanded glob correctly"
 else
     log_fail "Shell mode failed to expand glob. Output: $output"
+fi
+
+# Implicit shell mode check 2: Shell operators (pipe)
+# in . "echo hello | grep he"
+output=$("$IN_ABS" . "echo hello | grep he" 2>&1)
+if [[ "$output" == *"hello"* ]]; then
+     log_pass "Implicit shell mode handled pipe correctly"
+else
+     log_fail "Implicit shell mode failed pipe. Output: $output"
 fi
 
 cd ../..

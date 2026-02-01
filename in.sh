@@ -51,14 +51,13 @@ print_usage() {
     echo "Options:"
     echo "  -h, --help    Show this help message"
     echo "  -P, --parallel N  Run in parallel with N jobs (default: 1)"
-    echo "  -s, --shell       Execute command via shell (enables globs/pipes)"
     echo "  -v, --verbose Show verbose output"
     echo
     echo "Examples:"
     echo "  in project* git status"
     echo "  in frontend,backend npm install"
     echo "  in -P 4 repos/* git pull"
-    echo "  in -s repos/* 'ls *.json'   (expand globs inside directory)"
+    echo "  in repos/* 'ls *.json'   (expand globs inside directory using quotes)"
 }
 
 log() {
@@ -95,14 +94,13 @@ for arg in "$@"; do
   case "$arg" in
     "--help") set -- "$@" "-h" ;;
     "--parallel") set -- "$@" "-P" ;;
-    "--shell") set -- "$@" "-s" ;;
     "--verbose") set -- "$@" "-v" ;;
     *) set -- "$@" "$arg" ;;
   esac
 done
 
 OPTIND=1
-while getopts "hP:sv" opt; do
+while getopts "hP:v" opt; do
     case "$opt" in
     h)
         print_usage
@@ -110,9 +108,6 @@ while getopts "hP:sv" opt; do
         ;;
     P)
         parallelism=$OPTARG
-        ;;
-    s)
-        shell_mode=1
         ;;
     v)
         verbose=1
@@ -212,6 +207,24 @@ else
     done
 fi
 
+# Heuristic Correction: 
+# If we finished parsing and found NO command, but we have multiple "directories",
+# check if the last "directory" is actually a command (e.g. it was a file, or a glob string).
+if [[ ${#command_args[@]} -eq 0 ]] && [[ ${#raw_dirs[@]} -gt 1 ]]; then
+    last_idx=$((${#raw_dirs[@]} - 1))
+    potential_cmd="${raw_dirs[last_idx]}"
+    
+    # If the last argument is NOT a directory, assume it's the command
+    # This catches:
+    # 1. "ls *.txt" (matched glob heuristic, but isn't a dir)
+    # 2. "script.sh" (matched exist heuristic, but isn't a dir)
+    if [[ ! -d "$potential_cmd" ]]; then
+        command_args+=("$potential_cmd")
+        unset 'raw_dirs[last_idx]'
+        raw_dirs=("${raw_dirs[@]}") # Re-index
+    fi
+fi
+
 # Validate we have both directories and a command
 if [[ ${#raw_dirs[@]} -eq 0 ]]; then
     error "No target directories specified."
@@ -221,6 +234,17 @@ fi
 if [[ ${#command_args[@]} -eq 0 ]]; then
     error "No command specified."
     exit 1
+fi
+
+# Auto-enable shell mode for single argument commands
+if [[ ${#command_args[@]} -eq 1 ]]; then
+    # We only auto-enable if not already verbose logging to avoid noise unless requested
+    if [[ $verbose -eq 1 ]]; then
+        # Check if log function is defined before calling, or just use echo
+        # Using standard echo for consistency with other parts if log is internal
+        echo -e "${dray}Auto-enabling shell mode for single command string${NC}"
+    fi
+    shell_mode=1
 fi
 
 ################################################################################
