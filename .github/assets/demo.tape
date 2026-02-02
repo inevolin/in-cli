@@ -55,7 +55,7 @@ Type "# Run build scripts in parallel"
 Set TypingSpeed 75ms
 Sleep 500ms
 Enter
-Type "in -P 3 * bash -c 'echo building...; sleep 0.5'"
+Type "in -P 3 * 'echo building...; sleep 0.5'"
 Sleep 800ms
 Enter
 Sleep 3s
