@@ -73,7 +73,7 @@ When using wildcards (glob patterns) like `*.txt` in your command, your shell (b
 ## Installation
 
 ### Automatic (Recommended)
-Run the installer script: 
+Run the installer script:  
 ```bash
 curl -sL https://raw.githubusercontent.com/inevolin/in-cli/main/install.sh | bash
 ```
@@ -81,6 +81,11 @@ curl -sL https://raw.githubusercontent.com/inevolin/in-cli/main/install.sh | bas
 To install with a custom name (e.g., `indo` or `in-cli`) to avoid conflicts with the shell keyword `in`, pass the name as an argument:
 ```bash
 curl -sL https://raw.githubusercontent.com/inevolin/in-cli/main/install.sh | bash -s -- indo
+```
+
+**Non-root Installation:** If you do not have sudo privileges or prefer to install to a specific directory (e.g., `~/.local/bin`), you can override the destination using the `DEST_DIR` environment variable:
+```bash
+curl -sL https://raw.githubusercontent.com/inevolin/in-cli/main/install.sh | DEST_DIR=~/.local/bin bash -s -- indo
 ```
 
 ### Manual
