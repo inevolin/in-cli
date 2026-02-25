@@ -27,13 +27,18 @@ SOURCE_FILE="./in.sh"
 # Default command name is "in", but can be overridden by the first argument
 COMMAND_NAME="${1:-in}"
 
-# Candidate installation directories (in order of preference)
-CANDIDATE_DIRS=(
-    "/usr/local/bin"   # Common on macOS and Linux
-    "$HOME/.local/bin" # User-specific, no sudo needed
-    "$HOME/bin"        # Older user convention
-    "/usr/bin"         # System directory (usually requires sudo)
-)
+# Check if a preferred directory was passed via environment
+if [ -n "$DEST_DIR" ]; then
+    CANDIDATE_DIRS=("$DEST_DIR")
+# Otherwise, try reasonable candidate installation directories (in order of preference)
+else
+    CANDIDATE_DIRS=(
+        "/usr/local/bin"
+        "$HOME/.local/bin"
+        "$HOME/bin"
+        "/usr/bin"
+    )
+fi
 
 # Find the best installation directory
 DEST_DIR=""
